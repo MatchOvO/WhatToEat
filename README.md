@@ -1,24 +1,8 @@
-# what_to_eat
+# <img src="./public/img/taozi.png" style="width:50px;">What To Eat 
 
-## Project setup
-```
-npm install
-```
+## 运行效果图
+<img src="./Docs/img/1.png" style="">
+<img src="./Docs/img/2.png" style="">
+<img src="./Docs/img/3.png" style="">
+<img src="./Docs/img/4.png" style="">
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
