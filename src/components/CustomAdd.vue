@@ -1,6 +1,9 @@
 <template>
 <div class="custom-add-shell cover-shell">
   <div class="custom-add-container cover-container">
+    <transition>
+      <component :is="coverComponent"/>
+    </transition>
     <i class="fas fa-plus quit-icon" @click.prevent="closeCustomAdd"></i>
     <h1 class="custom-add-title">添加菜谱</h1>
     <div class="input-box">
@@ -9,7 +12,6 @@
     </div>
     <button class="short-button" @click.prevent="addMenu">添加</button>
   </div>
-
 </div>
 </template>
 
@@ -17,9 +19,11 @@
 import bus from "@/bus";
 import {useUserStore} from "@/stores/user";
 import axios from 'axios'
-import {ref} from "vue";
+import LoadingCover from "@/components/LoadingCover";
+import {markRaw, ref} from "vue";
 const user = useUserStore()
 const menuName = ref('')
+const coverComponent = ref(undefined)
 
 const closeCustomAdd = ()=>{
   bus.emit('closeCustomAdd')
@@ -28,20 +32,27 @@ const closeCustomAdd = ()=>{
 const addMenu = ()=>{
   const postPath = `/api/addMenu`
   console.log(postPath)
-  axios.post(postPath,{
-    menuName:menuName.value,
-    community:user['community']
-  },{
-    headers:{
-      Authorization:'Bearer '+localStorage.jwtToken
-    }
-  }).then(()=>{
-    bus.emit('onTinyAlert','添加成功')
-    bus.emit('closeCustomAdd')
-  }).catch(e=>{
-    console.log(e.message)
-    bus.emit('onTinyAlert','网络错误，添加失败')
-  })
+  if (menuName.value !== ''){
+    coverComponent.value = markRaw(LoadingCover)
+    axios.post(postPath,{
+      menuName:menuName.value,
+      community:user['community']
+    },{
+      headers:{
+        Authorization:'Bearer '+localStorage.jwtToken
+      }
+    }).then(()=>{
+      coverComponent.value = undefined
+      bus.emit('onTinyAlert','添加成功')
+      bus.emit('closeCustomAdd')
+    }).catch(e=>{
+      console.log(e.message)
+      coverComponent.value = undefined
+      bus.emit('onTinyAlert','网络错误，添加失败')
+    })
+  }else{
+    bus.emit('onTinyAlert','名称不能为空')
+  }
 }
 
 </script>
@@ -52,6 +63,7 @@ const addMenu = ()=>{
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
     .quit-icon{
       width: 25px;
       height: 25px;

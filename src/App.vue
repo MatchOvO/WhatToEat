@@ -3,7 +3,7 @@
     <LoadingBox v-if="!isLoaded"/>
   </transition>
   <transition>
-    <TinyAlert v-if="onTinyAlert"/>
+    <component :is="appCoverEl"/>
   </transition>
   <MainApp/>
 </template>
@@ -16,17 +16,18 @@ import {useUserStore} from "@/stores/user";
 import {useStatusStore} from "@/stores/status";
 import bus from '@/bus/index'
 import axios from 'axios'
-import {ref, onMounted, watch} from "vue";
+import {ref, onMounted, watch, markRaw} from "vue";
 
 const status = useStatusStore()
 const user = useUserStore()
 const isLoaded = ref(false)
-const onTinyAlert = ref(false)
+const appCoverEl = ref(undefined)
+const randomNum = (max)=>Math.trunc(Math.random() * max) + 1
 bus.on('onTinyAlert',(text)=>{
   status.alertText = text
-  onTinyAlert.value = true
+  appCoverEl.value = markRaw(TinyAlert)
   setTimeout(()=>{
-    onTinyAlert.value = false
+    appCoverEl.value = undefined
   },3000)
 })
 /**
@@ -40,13 +41,16 @@ if (!jwtToken) {
   axios.get('/api/guestLogin').then(res=>{
     const data = res.data
     user.username = data.username
-    user.community = data.community
-    user.isGuest = data.isGuest
+    user.avatarUrl = data.avatarUrl ? data.avatarUrl : ''
+    user.avatar = data.avatar ? data.avatar : `${randomNum(6)}`
+    user.community = data.community ? data.community : ''
+    user.isGuest = data.isGuest ? data.isGuest : true
     localStorage.jwtToken = data.jwtToken
   }).catch(e=>{
     console.log(e.message)
     user.username = '网络错误'
     user.isGuest = true
+    user.avatar = `${randomNum(6)}`
     bus.emit('onTinyAlert','网络错误')
   })
 }else{
@@ -57,15 +61,20 @@ if (!jwtToken) {
   }).then(res=>{
     const data = res.data
     user.username = data.username
-    user.community = data.community
-    user.isGuest = data.isGuest
-    data.personalMenu.forEach(item=>{
-      user.personalMenu.push(item)
-    })
+    user.avatarUrl = data.avatarUrl ? data.avatarUrl : ''
+    user.avatar = data.avatar ? data.avatar : `${randomNum(6)}`
+    user.community = data.community ? data.community : ''
+    user.isGuest = data.isGuest ? data.isGuest : false
+    if (data.personalMenu){
+      data.personalMenu.forEach(item=>{
+        user.personalMenu.push(item)
+      })
+    }
   }).catch(e=>{
     console.log(e.message)
     user.username = '网络错误'
     user.isGuest = true
+    user.avatar = `${randomNum(6)}`
     bus.emit('onTinyAlert','网络错误')
   })
 }
@@ -86,7 +95,7 @@ watch(()=>user.source,
 )
 </script>
 
-<style>
+<style lang="less">
 :root{
   --first-theme-color:#ff7575;
   --second-theme-color:#ffdcdc;
@@ -111,6 +120,11 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
+.bg-blur{
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 .short-button{
   width: 100px;
   height: 40px;
@@ -125,6 +139,22 @@ body {
 .short-button:hover{
   background-color: var(--first-theme-color);
   box-shadow: 0 3px 5px rgba(0,0,0,0),0 0 0 5px rgba(255,255,255,.8);
+}
+
+.long-button{
+  width: 60%;
+  height: 50px;
+  border: none;
+  border-radius: 25px;
+  background-color: rgba(255,255,255,.8);
+  box-shadow: 0 5px 10px rgba(0,0,0,.1);
+  color: #2c3e50;
+  font-family: YouShe;
+  transition: all .5s;
+  cursor: pointer;
+  &:hover{
+     background-color: var(--first-theme-color);
+   }
 }
 
 .cover-shell{

@@ -42,16 +42,17 @@
         </div>
         <input class="source-choose-btn" type="radio" name="customMenu" v-model="user.source" value="community" :disabled="communityDisabled">
       </div>
+      <p class="custom-attention-text" v-if="communityDisabled">社区菜谱需要登陆后才能使用，点击右下角登陆</p>
     </form>
     <div class="personal-nav">
       <h2 class="personal-title">
         我的菜谱
       </h2>
-      <button class="person-button" @click.prevent="openCustomAdd">
+      <button class="person-button long-button" @click.prevent="openCustomAdd">
         <i class="fas fa-plus-circle"></i>
         <span>添加菜谱</span>
       </button>
-      <button class="person-button" @click.prevent="openCustomCheck">
+      <button class="person-button long-button" @click.prevent="openCustomCheck">
         <span>查看我的菜谱</span>
       </button>
     </div>
@@ -178,6 +179,10 @@ onBeforeUnmount(()=>{
           }
         }
       }
+      .custom-attention-text{
+        font-size: 12px;
+        opacity: .5;
+      }
     }
     .personal-nav{
       margin-top: 10px;
@@ -193,19 +198,6 @@ onBeforeUnmount(()=>{
       }
       .person-button{
         margin-bottom: 20px;
-        width: 60%;
-        height: 50px;
-        border: none;
-        border-radius: 25px;
-        background-color: rgba(255,255,255,.8);
-        box-shadow: 0 5px 10px rgba(0,0,0,.1);
-        color: #2c3e50;
-        font-family: YouShe;
-        transition: all .5s;
-        cursor: pointer;
-        &:hover{
-          background-color: var(--first-theme-color);
-        }
         span{
           line-height: 50px;
           font-size: 18px;

@@ -6,7 +6,7 @@
     <button class="switch" @click.prevent="switchMenu">
       <span>更换</span>
     </button>
-    <button class="confirm" @click.prevent="closeChooseBox">
+    <button class="confirm" @click.prevent="confirmMenu">
       <span>确认</span>
     </button>
   </div>
@@ -15,6 +15,7 @@
 
 <script setup>
 import bus from '@/bus'
+import axios from "axios";
 
 const props = defineProps({
   randomMenu:String
@@ -23,7 +24,22 @@ const switchMenu = ()=>{
   bus.emit('getOtherMenu')
   bus.emit('switchToResult')
 }
-const closeChooseBox = ()=>{
+const confirmMenu = ()=>{
+  function confirmAxios(times) {
+    console.log(props.randomMenu)
+    axios.post('/api/confirmMenu',{
+      menuName:props.randomMenu
+    }).catch(e=>{
+      if (times <= 0){
+        setTimeout(()=>{
+          confirmAxios(times-1)
+        },500)
+      }else{
+        console.log(e)
+      }
+    })
+  }
+  confirmAxios(5)
   bus.emit('closeIndexChoose')
   setTimeout(()=>{
     bus.emit('normalizeTitle')
@@ -40,7 +56,7 @@ const closeChooseBox = ()=>{
   justify-content: center;
   position: relative;
   .result-h2{
-    margin-top: -50px;
+    margin-top: -60px;
     margin-bottom: 20px;
     font-size: 20px;
     text-align: left;
