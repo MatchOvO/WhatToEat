@@ -14,21 +14,31 @@ import UserBottom from '@/components/UserBottom'
 import bus from "@/bus";
 import UserLogin from '@/components/UserLogin'
 import UserRegister from '@/components/UserRegister'
-import {markRaw, ref} from "vue";
+import {markRaw, onBeforeUnmount, onMounted, ref} from "vue";
 
 const coverComponent = ref(undefined)
 
-bus.on('openUserLogin',()=>{
-  coverComponent.value = markRaw(UserLogin)
+onMounted(()=>{
+  bus.on('openUserLogin',()=>{
+    coverComponent.value = markRaw(UserLogin)
+  })
+  bus.on('closeUserLogin',()=>{
+    coverComponent.value = undefined
+  })
+  bus.on('openUserRegister',()=>{
+    coverComponent.value = markRaw(UserRegister)
+  })
+  bus.on('closeUserRegister',()=>{
+    coverComponent.value = undefined
+  })
 })
-bus.on('closeUserLogin',()=>{
-  coverComponent.value = undefined
-})
-bus.on('openUserRegister',()=>{
-  coverComponent.value = markRaw(UserRegister)
-})
-bus.on('closeUserRegister',()=>{
-  coverComponent.value = undefined
+
+onBeforeUnmount(()=>{
+  bus.off('openUserLogin')
+  bus.off('closeUserLogin')
+  bus.off('openUserRegister')
+  bus.off('closeUserRegister')
+
 })
 </script>
 

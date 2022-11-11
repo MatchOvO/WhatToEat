@@ -16,20 +16,15 @@ import {useUserStore} from "@/stores/user";
 import {useStatusStore} from "@/stores/status";
 import bus from '@/bus/index'
 import axios from 'axios'
-import {ref, onMounted, watch, markRaw} from "vue";
+import {ref, onMounted, watch, markRaw, onBeforeUnmount} from "vue";
 
 const status = useStatusStore()
 const user = useUserStore()
 const isLoaded = ref(false)
 const appCoverEl = ref(undefined)
 const randomNum = (max)=>Math.trunc(Math.random() * max) + 1
-bus.on('onTinyAlert',(text)=>{
-  status.alertText = text
-  appCoverEl.value = markRaw(TinyAlert)
-  setTimeout(()=>{
-    appCoverEl.value = undefined
-  },3000)
-})
+const loadingTime = ref(1000)
+
 /**
  * AJAX or register
  */
@@ -88,19 +83,47 @@ function getUser() {
   })
 }
 
+
+
 if (!jwtToken) {
   guestLogin();
+  if(localStorage.source)  loadingTime.value = 20000
 }else{
   getUser();
 }
 
 onMounted(()=>{
-  setTimeout(()=>{
-    isLoaded.value = true
-  },1000)
   bus.on('onLoaded',()=>{
     console.log('onLoaded')
   })
+  bus.on('onTinyAlert',(text)=>{
+    status.alertText = text
+    appCoverEl.value = markRaw(TinyAlert)
+    setTimeout(()=>{
+      appCoverEl.value = undefined
+    },3000)
+  })
+  if (loadingTime.value > 10000){
+    bus.emit('onTinyAlert','首次加载时间会较长')
+    setTimeout(()=>{
+      bus.emit('onTinyAlert','请耐心等待')
+    },5000)
+    setTimeout(()=>{
+      bus.emit('onTinyAlert','加载中....')
+    },10000)
+    setTimeout(()=>{
+      bus.emit('onTinyAlert','就快好了....')
+    },15000)
+  }
+  setTimeout(()=>{
+    isLoaded.value = true
+  },loadingTime.value)
+
+})
+
+onBeforeUnmount(()=>{
+  bus.off('onLoaded')
+  bus.off('onTinyAlert')
 })
 
 watch(()=>user.source,

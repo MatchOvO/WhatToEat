@@ -3,7 +3,7 @@
     <router-link class="app-footer-icon" active-class="app-footer-icon-active" to="/">
       <img class="icon" :src="require('../../public/img/taozi.png')">
     </router-link>
-    <router-link class="app-footer-icon" active-class="app-footer-icon-active" to="/custom">
+    <router-link class="app-footer-icon" active-class="app-footer-icon-active" to="/custom" id="second-step">
       <img class="icon" :src="require('../../public/img/caomei.png')">
     </router-link>
     <router-link class="app-footer-icon" active-class="app-footer-icon-active" to="/user">

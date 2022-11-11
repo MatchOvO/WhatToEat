@@ -142,7 +142,7 @@ const register = ()=>{
   }
 }
 
-watch(community, (community, preCommunity) => {
+watch(community, () => {
   getCommunityList()
 })
 

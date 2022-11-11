@@ -20,7 +20,7 @@
 import ChooseQuestion from '@/components/ChooseQuestion'
 import ChooseResult from  '@/components/ChooseResult'
 import bus from "@/bus";
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 
 const titleText = ref('问题')
 const props = defineProps({
@@ -39,15 +39,17 @@ const props = defineProps({
   }
 })
 
-bus.on('switchToResult',()=>{
-  titleText.value = 'loading'
-  setTimeout(()=>{
-    titleText.value = '结果'
-  },1000)
-})
+onMounted(()=>{
+  bus.on('switchToResult',()=>{
+    titleText.value = 'loading'
+    setTimeout(()=>{
+      titleText.value = '结果'
+    },1000)
+  })
 
-bus.on('normalizeTitle',()=>{
-  titleText.value = '问题'
+  bus.on('normalizeTitle',()=>{
+    titleText.value = '问题'
+  })
 })
 
 const closeIndexChoose = ()=>{

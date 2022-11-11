@@ -1,5 +1,5 @@
 <template>
-<div class="index-box-shell">
+<div class="index-box-shell" id="first-step">
   <p>到饭点了...</p>
   <p>还在纠结今天吃什么吗？</p>
   <div class="index-box-img-container">

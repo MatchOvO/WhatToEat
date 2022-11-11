@@ -9,7 +9,7 @@ export const useUserStore =defineStore({
         isGuest:true,
         community:'',
         source:'public',
-        type:'',
+        type:'主食',
         typeCustom:'自定义',
         personalMenu:[]
     })

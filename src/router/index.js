@@ -1,10 +1,10 @@
-import {createRouter,createWebHistory} from 'vue-router'
+import {createRouter,createWebHashHistory} from 'vue-router'
 import AppIndex from "@/components/AppIndex";
 import AppCustom from "@/components/AppCustom";
 import AppUser from "@/components/AppUser"
 
 const router = createRouter({
-    history:createWebHistory(),
+    history:createWebHashHistory(),
     routes:[
         {
             path:'/',

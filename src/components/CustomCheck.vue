@@ -39,7 +39,7 @@
 <script setup>
 import bus from "@/bus";
 import {useUserStore} from "@/stores/user";
-import {markRaw, onBeforeUpdate, onMounted, onUpdated, ref} from "vue";
+import {markRaw, onBeforeUnmount, onBeforeUpdate, onMounted, onUpdated, ref} from "vue";
 import LoadingCover from '@/components/LoadingCover'
 import axios from "axios";
 
@@ -89,9 +89,15 @@ const closeCustomAdd = ()=>{
   bus.emit('closeCustomCheck')
 }
 
-bus.on('openCheckLoading',()=>{
-  coverComponent.value = markRaw(LoadingCover)
-  getMenuList()
+onMounted(()=>{
+  bus.on('openCheckLoading',()=>{
+    coverComponent.value = markRaw(LoadingCover)
+    getMenuList()
+  })
+})
+
+onBeforeUnmount(()=>{
+  bus.off('openCheckLoading')
 })
 
 </script>

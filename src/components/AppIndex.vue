@@ -15,7 +15,7 @@ import IndexClock from '@/components/IndexClock'
 import IndexBox from '@/components/IndexBox'
 import IndexChoose from '@/components/IndexChoose'
 import bus from "@/bus";
-import {reactive, ref} from "vue";
+import {onBeforeUnmount, onMounted, reactive, ref} from "vue";
 import axios from "axios";
 import {useUserStore} from "@/stores/user";
 
@@ -78,23 +78,33 @@ function getRandomMenu() {
   })
 }
 
-bus.on('getOtherMenu',()=>{
-  getRandomMenu()
+onMounted(()=>{
+  bus.on('getOtherMenu',()=>{
+    getRandomMenu()
+  })
+
+  bus.on('openIndexChoose',()=>{
+    const randomKey = Math.trunc(Math.random() * questionList.length)
+    console.log(randomKey)
+    randomQuestion.question = questionList[randomKey]
+    getRandomMenu()
+    setTimeout(()=>{
+      showIndexChoose.value = true
+    },200)
+  })
+
+  bus.on('closeIndexChoose',()=>{
+    showIndexChoose.value = false
+  })
 })
 
-bus.on('openIndexChoose',()=>{
-  const randomKey = Math.trunc(Math.random() * questionList.length)
-  console.log(randomKey)
-  randomQuestion.question = questionList[randomKey]
-  getRandomMenu()
-  setTimeout(()=>{
-    showIndexChoose.value = true
-  },200)
+onBeforeUnmount(()=>{
+  bus.off('getOtherMenu')
+  bus.off('openIndexChoose')
+  bus.off('closeIndexChoose')
+
 })
 
-bus.on('closeIndexChoose',()=>{
-  showIndexChoose.value = false
-})
 </script>
 
 <style scoped lang="less">

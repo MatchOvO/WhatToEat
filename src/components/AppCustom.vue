@@ -88,6 +88,24 @@
         </div>
         <div class="type-choose-nav">
           <div class="type-text-nav">
+            <i class="fas fa-apple-alt"></i>
+            <div class="content-nav">
+              <h2>水果</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="水果" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
+            <i class="fas fa-ice-cream"></i>
+            <div class="content-nav">
+              <h2>甜品</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="甜品" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
             <i class="fas fa-user-circle"></i>
             <div class="content-nav">
               <h2>自定义</h2>
@@ -120,23 +138,33 @@ import CustomAdd from '@/components/CustomAdd'
 import CustomCheck from '@/components/CustomCheck'
 import CustomType from '@/components/CustomType'
 import bus from "@/bus";
-import {computed, onBeforeUnmount, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 
 const user = useUserStore()
 const showCustomAdd = ref(false)
 const showCustomCheck = ref(false)
 const showCustomType = ref(false)
 
-bus.on('closeCustomAdd',()=>{
-  showCustomAdd.value = false
+
+
+onMounted(()=>{
+  bus.on('closeCustomAdd',()=>{
+    showCustomAdd.value = false
+  })
+
+  bus.on('closeCustomCheck',()=>{
+    showCustomCheck.value = false
+  })
+
+  bus.on('closeCustomType',()=>{
+    showCustomType.value = false
+  })
 })
 
-bus.on('closeCustomCheck',()=>{
-  showCustomCheck.value = false
-})
-
-bus.on('closeCustomType',()=>{
-  showCustomType.value = false
+onBeforeUnmount(()=>{
+  bus.off('closeCustomAdd')
+  bus.off('closeCustomCheck')
+  bus.off('closeCustomType')
 })
 
 const communityDisabled = computed(()=>{
@@ -160,9 +188,6 @@ const openCustomCheck = ()=>{
   },200)
 }
 
-onBeforeUnmount(()=>{
-  bus.off('closeCustomAdd')
-})
 
 </script>
 
@@ -252,7 +277,7 @@ onBeforeUnmount(()=>{
     }
     .type-nav{
       width: 100%;
-      //margin-top: 10px;
+      margin-top: 10px;
       .type-title{
         font-size: 25px;
         text-align: left;
