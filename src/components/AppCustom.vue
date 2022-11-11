@@ -154,9 +154,9 @@ const openCustomAdd = ()=>{
   },200)
 }
 const openCustomCheck = ()=>{
+  bus.emit('openCheckLoading')
   setTimeout(()=>{
     showCustomCheck.value = true
-    bus.emit('onTinyAlert','当前版本不支持查看')
   },200)
 }
 
@@ -252,7 +252,7 @@ onBeforeUnmount(()=>{
     }
     .type-nav{
       width: 100%;
-      margin-top: 20px;
+      //margin-top: 10px;
       .type-title{
         font-size: 25px;
         text-align: left;
@@ -260,7 +260,7 @@ onBeforeUnmount(()=>{
       }
       .type-form{
         width: 80%;
-        margin: 20px auto ;
+        margin: 10px auto ;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -312,7 +312,7 @@ onBeforeUnmount(()=>{
       }
     }
     .personal-nav{
-      margin-top: 10px;
+      margin-top: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;

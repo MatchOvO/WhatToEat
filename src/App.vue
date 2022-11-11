@@ -37,8 +37,9 @@ const source = localStorage.source
 if (!source) localStorage.source = 'public'
 user.source = source
 const jwtToken = localStorage.jwtToken
-if (!jwtToken) {
-  axios.get('/apiG/guestLogin').then(res=>{
+
+function guestLogin() {
+  axios.get('/apiG/guestLogin').then(res => {
     const data = res.data
     user.username = data.username
     user.avatarUrl = data.avatarUrl ? data.avatarUrl : ''
@@ -46,37 +47,51 @@ if (!jwtToken) {
     user.community = data.community ? data.community : ''
     user.isGuest = data.isGuest ? data.isGuest : true
     localStorage.jwtToken = data.jwtToken
-  }).catch(e=>{
+  }).catch(e => {
     console.log(e.message)
     user.username = '网络错误'
     user.isGuest = true
     user.avatar = `${randomNum(6)}`
-    bus.emit('onTinyAlert','网络错误')
+    bus.emit('onTinyAlert', '网络错误')
   })
-}else{
-  axios.get('/api/getUser',{
-    headers:{
-      Authorization:'Bearer '+jwtToken
+}
+
+function getUser() {
+  axios.get('/api/getUser', {
+    headers: {
+      Authorization: 'Bearer ' + jwtToken
     }
-  }).then(res=>{
+  }).then(res => {
     const data = res.data
     user.username = data.username
     user.avatarUrl = data.avatarUrl ? data.avatarUrl : ''
     user.avatar = data.avatar ? data.avatar : `${randomNum(6)}`
     user.community = data.community ? data.community : ''
     user.isGuest = data.isGuest ? data.isGuest : false
-    if (data.personalMenu){
-      data.personalMenu.forEach(item=>{
+    if (data.personalMenu) {
+      data.personalMenu.forEach(item => {
         user.personalMenu.push(item)
       })
     }
-  }).catch(e=>{
+  }).catch(e => {
     console.log(e.message)
-    user.username = '网络错误'
-    user.isGuest = true
-    user.avatar = `${randomNum(6)}`
-    bus.emit('onTinyAlert','网络错误')
+    if (e.response.status === 401){
+      localStorage.removeItem('jwtToken')
+      bus.emit('onTinyAlert', '登陆失败，请重新登陆')
+      guestLogin()
+    }else{
+      user.username = '网络错误'
+      user.isGuest = true
+      user.avatar = `${randomNum(6)}`
+      bus.emit('onTinyAlert', '网络错误')
+    }
   })
+}
+
+if (!jwtToken) {
+  guestLogin();
+}else{
+  getUser();
 }
 
 onMounted(()=>{

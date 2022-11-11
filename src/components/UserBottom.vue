@@ -32,10 +32,12 @@ const updateInfo = ()=>{
   bus.emit('onTinyAlert','当前版本暂不支持')
 }
 const userLogout = ()=>{
-  setTimeout(()=>{
-    localStorage.removeItem('jwtToken')
-    location.reload()
-  },200)
+  if (confirm('是否退出登陆')){
+    setTimeout(()=>{
+      localStorage.removeItem('jwtToken')
+      location.reload()
+    },200)
+  }
 }
 </script>
 

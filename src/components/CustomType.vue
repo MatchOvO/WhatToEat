@@ -5,7 +5,7 @@
       <h1 class="custom-type-title">选择自定义种类</h1>
       <div class="input-box">
         <p>种类:</p>
-        <input type="text" v-model="inputType" >
+        <input type="text" v-model="inputType" :placeholder="user.typeCustom">
 <!--        <transition>-->
 <!--          <ul class="typeList">-->
 <!--            <li>主食</li>-->
@@ -16,7 +16,7 @@
 <!--        </transition>-->
         <transition>
           <ul class="typeList" v-if="typeList.length">
-            <li v-for="item in typeList" :key="item">{{item}}</li>
+            <li v-for="item in typeList" :key="item" @click="useTypeList(item)">{{item}}</li>
           </ul>
         </transition>
       </div>
@@ -28,13 +28,36 @@
 <script setup>
 import bus from "@/bus";
 import {useUserStore} from "@/stores/user";
-import {reactive, ref} from "vue";
+import {onUpdated, reactive, ref, watch} from "vue";
+import axios from "axios";
 
 const user = useUserStore()
 const typeList = reactive([])
 const inputType = ref('')
+let axiosId = ''
+
+const getTypeList = ()=>{
+  clearTimeout(axiosId)
+  axiosId = setTimeout(()=>{
+    typeList.splice(0,10)
+    axios.get(`/apiG/typeList?keywords=${inputType.value}`).then((res)=>{
+      res.data.forEach((item,index)=>{
+        typeList.splice(0,10)
+        if (index < 6) typeList.push(item)
+      })
+    }).catch(e=>{
+      console.log(e.message)
+      bus.emit('onTinyAlert','网络错误')
+    })
+  },200)
+}
+
+const useTypeList = (typeText)=>{
+  inputType.value = typeText
+}
 
 const closeCustomType = ()=>{
+  inputType.value = ''
   bus.emit('closeCustomType')
 }
 const confirmType = ()=>{
@@ -45,8 +68,12 @@ const confirmType = ()=>{
   }else{
     bus.emit('onTinyAlert','种类名称不能为空')
   }
-
 }
+
+watch(inputType,()=>{
+  console.log('@@')
+  getTypeList()
+})
 </script>
 
 <style scoped lang="less">

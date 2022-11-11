@@ -35,7 +35,7 @@ const confirmMenu = ()=>{
           confirmAxios(times-1)
         },500)
       }else{
-        console.log(e)
+        console.log(e.message)
       }
     })
   }

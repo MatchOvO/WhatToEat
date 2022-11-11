@@ -47,6 +47,8 @@ const addMenu = ()=>{
       }
     }).then(()=>{
       coverComponent.value = undefined
+      menuName.value = ''
+      type.value = ''
       bus.emit('onTinyAlert','添加成功')
       bus.emit('closeCustomAdd')
     }).catch(e=>{
