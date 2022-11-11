@@ -9,6 +9,8 @@
     <div class="input-box">
       <p>名称:</p>
       <input type="text" v-model="menuName">
+      <p>种类:</p>
+      <input type="text" v-model="type">
     </div>
     <button class="short-button" @click.prevent="addMenu">添加</button>
   </div>
@@ -23,6 +25,7 @@ import LoadingCover from "@/components/LoadingCover";
 import {markRaw, ref} from "vue";
 const user = useUserStore()
 const menuName = ref('')
+const type = ref('')
 const coverComponent = ref(undefined)
 
 const closeCustomAdd = ()=>{
@@ -36,7 +39,8 @@ const addMenu = ()=>{
     coverComponent.value = markRaw(LoadingCover)
     axios.post(postPath,{
       menuName:menuName.value,
-      community:user['community']
+      community:user['community'],
+      type:type.value
     },{
       headers:{
         Authorization:'Bearer '+localStorage.jwtToken

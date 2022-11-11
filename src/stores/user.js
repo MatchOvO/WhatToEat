@@ -9,6 +9,8 @@ export const useUserStore =defineStore({
         isGuest:true,
         community:'',
         source:'public',
+        type:'',
+        typeCustom:'自定义',
         personalMenu:[]
     })
 })

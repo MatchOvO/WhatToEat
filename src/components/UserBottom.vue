@@ -13,20 +13,29 @@
 
 <script setup>
 import {useUserStore} from "@/stores/user";
+import bus from "@/bus";
+import router from "@/router";
 
 const user = useUserStore()
 
 const userLogin = ()=>{
-
+  setTimeout(()=>{
+    bus.emit('openUserLogin')
+  },200)
 }
 const userRegister = ()=>{
-
+  setTimeout(()=>{
+    bus.emit('openUserRegister')
+  })
 }
 const updateInfo = ()=>{
-
+  bus.emit('onTinyAlert','当前版本暂不支持')
 }
 const userLogout = ()=>{
-
+  setTimeout(()=>{
+    localStorage.removeItem('jwtToken')
+    location.reload()
+  },200)
 }
 </script>
 

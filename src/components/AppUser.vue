@@ -2,12 +2,34 @@
   <div class="user-container">
     <UserInfo/>
     <UserBottom/>
+    <transition>
+      <component :is="coverComponent"/>
+    </transition>
   </div>
 </template>
 
 <script setup>
 import UserInfo from '@/components/UserInfo'
 import UserBottom from '@/components/UserBottom'
+import bus from "@/bus";
+import UserLogin from '@/components/UserLogin'
+import UserRegister from '@/components/UserRegister'
+import {markRaw, ref} from "vue";
+
+const coverComponent = ref(undefined)
+
+bus.on('openUserLogin',()=>{
+  coverComponent.value = markRaw(UserLogin)
+})
+bus.on('closeUserLogin',()=>{
+  coverComponent.value = undefined
+})
+bus.on('openUserRegister',()=>{
+  coverComponent.value = markRaw(UserRegister)
+})
+bus.on('closeUserRegister',()=>{
+  coverComponent.value = undefined
+})
 </script>
 
 <style scoped lang="less">

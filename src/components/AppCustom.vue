@@ -6,12 +6,15 @@
   <transition>
     <CustomCheck v-show="showCustomCheck"/>
   </transition>
+  <transition>
+    <CustomType v-show="showCustomType"/>
+  </transition>
   <h1 class="custom-title">
     菜谱
     <i class="fas fa-ice-cream"></i>
   </h1>
   <div class="custom-list">
-    <form>
+    <form class="source-form">
       <div class="source-choose-nav">
         <div class="source-text-nav">
           <i class="fas fa-chart-pie"></i>
@@ -44,6 +47,56 @@
       </div>
       <p class="custom-attention-text" v-if="communityDisabled">社区菜谱需要登陆后才能使用，点击右下角登陆</p>
     </form>
+    <div class="type-nav">
+      <h2 class="type-title">种类</h2>
+      <form class="type-form">
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
+            <i class="fas fa-list-alt"></i>
+            <div class="content-nav">
+              <h2>全部</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
+            <i class="fas fa-hamburger"></i>
+            <div class="content-nav">
+              <h2>主食</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="主食" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
+            <i class="fas fa-cocktail"></i>
+            <div class="content-nav">
+              <h2>饮品</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="饮品" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
+            <i class="fas fa-coffee"></i>
+            <div class="content-nav">
+              <h2>奶茶</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="奶茶" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
+            <i class="fas fa-user-circle"></i>
+            <div class="content-nav">
+              <h2>自定义</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" :value="user.typeCustom" id="type-choose-btn" @click="openCustomType">
+        </div>
+      </form>
+    </div>
     <div class="personal-nav">
       <h2 class="personal-title">
         我的菜谱
@@ -65,11 +118,14 @@
 import {useUserStore} from "@/stores/user";
 import CustomAdd from '@/components/CustomAdd'
 import CustomCheck from '@/components/CustomCheck'
+import CustomType from '@/components/CustomType'
 import bus from "@/bus";
 import {computed, onBeforeUnmount, ref} from "vue";
+
 const user = useUserStore()
 const showCustomAdd = ref(false)
 const showCustomCheck = ref(false)
+const showCustomType = ref(false)
 
 bus.on('closeCustomAdd',()=>{
   showCustomAdd.value = false
@@ -78,11 +134,20 @@ bus.on('closeCustomAdd',()=>{
 bus.on('closeCustomCheck',()=>{
   showCustomCheck.value = false
 })
+
+bus.on('closeCustomType',()=>{
+  showCustomType.value = false
+})
+
 const communityDisabled = computed(()=>{
   const result = (user.community === '')
-  console.log(user.community,result)
   return result
 })
+const openCustomType = ()=>{
+  setTimeout(()=>{
+    showCustomType.value = true
+  },200)
+}
 const openCustomAdd = ()=>{
   setTimeout(()=>{
     showCustomAdd.value = true
@@ -91,6 +156,7 @@ const openCustomAdd = ()=>{
 const openCustomCheck = ()=>{
   setTimeout(()=>{
     showCustomCheck.value = true
+    bus.emit('onTinyAlert','当前版本不支持查看')
   },200)
 }
 
@@ -126,7 +192,7 @@ onBeforeUnmount(()=>{
     background-color: transparent;
     flex-grow: 1;
     overflow: hidden auto;
-    form{
+    .source-form{
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -182,6 +248,67 @@ onBeforeUnmount(()=>{
       .custom-attention-text{
         font-size: 12px;
         opacity: .5;
+      }
+    }
+    .type-nav{
+      width: 100%;
+      margin-top: 20px;
+      .type-title{
+        font-size: 25px;
+        text-align: left;
+        padding-left: 50px;
+      }
+      .type-form{
+        width: 80%;
+        margin: 20px auto ;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .type-choose-nav{
+          margin: 5px;
+          width: 45%;
+          position: relative;
+          .type-text-nav{
+            display: flex;
+            position: absolute;
+            z-index: 2;
+            align-items: center;
+            left: 20px;
+            top: 20px;
+            i{
+              font-size: 20px;
+            }
+            .content-nav{
+              margin-left: 20px;
+              h2{
+                font-size: 20px;
+                text-align: left;
+              }
+              p{
+                width: 85%;
+                font-size: 12px;
+                text-align: left;
+                margin-left: 10px;
+              }
+            }
+          }
+          .type-choose-btn{
+            appearance: none;
+            width: 100%;
+            height: 50px;
+            border-radius: 10px;
+            background-color: rgba(255,255,255,.8);
+            box-shadow: 0 5px 10px rgba(0,0,0,.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            transition: all .3s;
+            &:checked{
+              background-color: var(--first-theme-color);
+            }
+          }
+
+        }
       }
     }
     .personal-nav{

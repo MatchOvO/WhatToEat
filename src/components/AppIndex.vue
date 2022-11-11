@@ -17,10 +17,12 @@ import IndexChoose from '@/components/IndexChoose'
 import bus from "@/bus";
 import {reactive, ref} from "vue";
 import axios from "axios";
+import {useUserStore} from "@/stores/user";
 
 const showIndexChoose = ref(false)
 const randomMenu = ref(undefined)
 const randomQuestion = reactive({question:{}})
+const userInfo = useUserStore()
 
 const questionList = [
   {
@@ -51,13 +53,25 @@ const questionList = [
 ]
 
 function getRandomMenu() {
-  axios.get(`/api/randomMenu?source=${localStorage.source}`,{
+  axios.get(`/api/randomMenu?source=${localStorage.source}&type=${userInfo.type}`,{
     headers:{
       Authorization:'Bearer '+localStorage.jwtToken
     }
   }).then(res=>{
     const data = res.data
     randomMenu.value = data.randomMenu
+    if(!randomMenu.value){
+      setTimeout(()=>{
+        showIndexChoose.value = false
+        if(localStorage.source === 'personal'){
+          bus.emit('onTinyAlert','没有添加个人菜谱')
+        }else if(localStorage.source === 'community'){
+          bus.emit('onTinyAlert','社区无人添加(此种类)菜谱～')
+        }else if(localStorage.source === 'public'){
+          bus.emit('onTinyAlert','没有人添加(此种类)菜谱～')
+        }
+      },500)
+    }
   }).catch(e=>{
     console.log(e.message)
     bus.emit('onTinyAlert','网络错误')

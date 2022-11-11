@@ -11,13 +11,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import {markRaw, ref} from "vue";
 import {useUserStore} from "@/stores/user";
 
+
 const user = useUserStore()
-console.log(user.avatar)
 const imgPath = ref(``)
 imgPath.value = user.avatarUrl ? user.avatarUrl : `/img/people${user.avatar}.png`
+
+
 
 
 </script>
