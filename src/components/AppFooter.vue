@@ -1,5 +1,5 @@
 <template>
-  <div class="app-footer-nav">
+  <div class="app-footer-nav" id="app-footer-nav">
     <router-link class="app-footer-icon" active-class="app-footer-icon-active" to="/">
       <img class="icon" :src="require('../../public/img/taozi.png')">
     </router-link>
@@ -22,6 +22,7 @@
     z-index: 99;
     width: 100%;
     height: 50px;
+    padding-bottom: 30px;
     background-color: var(--first-theme-color);
     bottom: 0;
     display: flex;

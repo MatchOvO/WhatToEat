@@ -378,7 +378,7 @@ const openCustomCheck = ()=>{
       }
     }
     .custom-footer{
-      height: 50px;
+      height: 100px;
     }
   }
 }

@@ -5,6 +5,7 @@
   <transition>
     <component :is="appCoverEl"/>
   </transition>
+  <div style="height: 100vh" id="testDiv"></div>
   <MainApp/>
 </template>
 
@@ -92,6 +93,7 @@ if (!jwtToken) {
 }
 
 onMounted(()=>{
+
   bus.on('onLoaded',()=>{
     console.log('onLoaded')
   })
@@ -102,6 +104,12 @@ onMounted(()=>{
       appCoverEl.value = undefined
     },3000)
   })
+  console.log(document.querySelector('#testDiv').offsetHeight)
+  const testDivH = document.querySelector('#testDiv').offsetHeight
+  const bodyH = document.querySelector('body').offsetHeight
+  if (testDivH > bodyH){
+    document.querySelector('#app-footer-nav').style.paddingBottom = "0px"
+  }
   if (loadingTime.value >= 3000){
     bus.emit('onTinyAlert','首次加载时间会较长')
     // setTimeout(()=>{
