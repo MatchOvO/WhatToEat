@@ -22,10 +22,10 @@ import bus from "@/bus";
 import {useUserStore} from "@/stores/user";
 import axios from 'axios'
 import LoadingCover from "@/components/LoadingCover";
-import {markRaw, ref} from "vue";
+import {markRaw, onUpdated, ref} from "vue";
 const user = useUserStore()
 const menuName = ref('')
-const type = ref('')
+const type = ref(user.type)
 const coverComponent = ref(undefined)
 
 const closeCustomAdd = ()=>{
@@ -35,7 +35,7 @@ const closeCustomAdd = ()=>{
 const addMenu = ()=>{
   const postPath = `/api/addMenu`
   console.log(postPath)
-  if (menuName.value !== ''){
+  if (menuName.value !== '' && type.value.length <= 3){
     coverComponent.value = markRaw(LoadingCover)
     axios.post(postPath,{
       menuName:menuName.value,
@@ -56,10 +56,16 @@ const addMenu = ()=>{
       coverComponent.value = undefined
       bus.emit('onTinyAlert','网络错误，添加失败')
     })
+  }else if(type.value.length > 3) {
+    bus.emit('onTinyAlert', '种类名称不能大于三个字')
   }else{
-    bus.emit('onTinyAlert','名称不能为空')
+    bus.emit('onTinyAlert', '名称不能为空')
   }
 }
+
+onUpdated(()=>{
+  type.value = user.type
+})
 
 </script>
 

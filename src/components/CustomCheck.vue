@@ -158,7 +158,10 @@ onBeforeUnmount(()=>{
           }
           .menuName-text{
             font-size: 18px;
-
+            width: 100px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
           }
           .menuType-text{
             font-size: 14px;

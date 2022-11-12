@@ -106,9 +106,27 @@
         </div>
         <div class="type-choose-nav">
           <div class="type-text-nav">
+            <i class="fas fa-bread-slice"></i>
+            <div class="content-nav">
+              <h2>面包</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="零食" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
+            <i class="fas fa-cookie"></i>
+            <div class="content-nav">
+              <h2>零食</h2>
+            </div>
+          </div>
+          <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" value="零食" id="type-choose-btn">
+        </div>
+        <div class="type-choose-nav">
+          <div class="type-text-nav">
             <i class="fas fa-user-circle"></i>
             <div class="content-nav">
-              <h2>自定义</h2>
+              <h2>{{ user.typeCustom }}</h2>
             </div>
           </div>
           <input class="type-choose-btn" type="radio" name="customType" v-model="user.type" :value="user.typeCustom" id="type-choose-btn" @click="openCustomType">

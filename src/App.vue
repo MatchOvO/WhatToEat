@@ -83,11 +83,10 @@ function getUser() {
   })
 }
 
-
+if(!source) loadingTime.value = 5000
 
 if (!jwtToken) {
   guestLogin();
-  if(localStorage.source)  loadingTime.value = 20000
 }else{
   getUser();
 }
@@ -103,17 +102,17 @@ onMounted(()=>{
       appCoverEl.value = undefined
     },3000)
   })
-  if (loadingTime.value > 10000){
+  if (loadingTime.value >= 3000){
     bus.emit('onTinyAlert','首次加载时间会较长')
-    setTimeout(()=>{
-      bus.emit('onTinyAlert','请耐心等待')
-    },5000)
-    setTimeout(()=>{
-      bus.emit('onTinyAlert','加载中....')
-    },10000)
-    setTimeout(()=>{
-      bus.emit('onTinyAlert','就快好了....')
-    },15000)
+    // setTimeout(()=>{
+    //   bus.emit('onTinyAlert','请耐心等待')
+    // },5000)
+    // setTimeout(()=>{
+    //   bus.emit('onTinyAlert','加载中....')
+    // },10000)
+    // setTimeout(()=>{
+    //   bus.emit('onTinyAlert','就快好了....')
+    // },15000)
   }
   setTimeout(()=>{
     isLoaded.value = true

@@ -277,6 +277,7 @@ watch(community, () => {
           border-radius: 10px;
           overflow: hidden;
           background-color: rgba(255,255,255,.5);
+          box-shadow: 0 5px 10px rgba(0,0,0,.1);
           li{
             width: 95%;
             height: 35px;

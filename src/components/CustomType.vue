@@ -61,17 +61,18 @@ const closeCustomType = ()=>{
   bus.emit('closeCustomType')
 }
 const confirmType = ()=>{
-  if (inputType.value){
+  if (inputType.value && inputType.value.length <= 3){
     user.typeCustom = inputType.value
     user.type = inputType.value
     bus.emit('closeCustomType')
-  }else{
+  }else if(!inputType.value){
     bus.emit('onTinyAlert','种类名称不能为空')
+  }else if(inputType.value.length > 3){
+    bus.emit('onTinyAlert','名称只支持最多三个字')
   }
 }
 
 watch(inputType,()=>{
-  console.log('@@')
   getTypeList()
 })
 </script>
@@ -134,6 +135,7 @@ watch(inputType,()=>{
         border-radius: 10px;
         overflow: hidden;
         background-color: rgba(255,255,255,.5);
+        box-shadow: 0 5px 10px rgba(0,0,0,.1);
         li{
           width: 95%;
           height: 35px;
